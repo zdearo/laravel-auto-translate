@@ -2,6 +2,8 @@
 
 namespace Zdearo\LaravelAutoTranslate;
 
+use App\Console\Commands\ExtractTranslations;
+use App\Console\Commands\MergeTranslations;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Zdearo\LaravelAutoTranslate\Commands\LaravelAutoTranslateCommand;
@@ -18,8 +20,9 @@ class LaravelAutoTranslateServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-auto-translate')
             ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laravel_auto_translate_table')
-            ->hasCommand(LaravelAutoTranslateCommand::class);
+            ->hasCommands([
+                ExtractTranslations::class,
+                MergeTranslations::class
+            ]);
     }
 }
