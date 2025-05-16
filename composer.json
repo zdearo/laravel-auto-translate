@@ -1,5 +1,7 @@
 {
     "name": "zdearo/laravel-auto-translate",
+    "version": "dev-main",
+    "type": "library",
     "description": "A Laravel package for auto translate strings.",
     "keywords": [
         "Adryel Dearo",
