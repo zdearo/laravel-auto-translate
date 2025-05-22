@@ -1,0 +1,42 @@
+#!/usr/bin/env php
+<?php
+
+// Find Laravel application
+$laravelBase = getcwd();
+
+// Check if we're in a Laravel application
+if (!file_exists($laravelBase . '/artisan')) {
+    echo "Error: This command must be run from the root of a Laravel application.\n";
+    exit(1);
+}
+
+// Find autoloader
+$possibleFiles = [
+    $laravelBase . '/vendor/autoload.php',
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../autoload.php',
+];
+
+$file = null;
+foreach ($possibleFiles as $possibleFile) {
+    if (file_exists($possibleFile)) {
+        $file = $possibleFile;
+        break;
+    }
+}
+
+if (null === $file) {
+    throw new RuntimeException('Unable to locate autoload.php file.');
+}
+
+require_once $file;
+
+// Bootstrap Laravel application
+$app = require_once $laravelBase . '/bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$status = $kernel->handle(
+    $input = new Symfony\Component\Console\Input\ArgvInput(['artisan', 'translations:merge', $argv[1] ?? null]),
+    new Symfony\Component\Console\Output\ConsoleOutput()
+);
+$kernel->terminate($input, $status);
+exit($status);

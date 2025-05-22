@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Zdearo\LaravelAutoTranslate\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;

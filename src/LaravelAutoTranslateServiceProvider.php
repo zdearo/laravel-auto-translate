@@ -2,11 +2,10 @@
 
 namespace Zdearo\LaravelAutoTranslate;
 
-use App\Console\Commands\ExtractTranslations;
-use App\Console\Commands\MergeTranslations;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Zdearo\LaravelAutoTranslate\Commands\LaravelAutoTranslateCommand;
+use Zdearo\LaravelAutoTranslate\Commands\ExtractTranslations;
+use Zdearo\LaravelAutoTranslate\Commands\MergeTranslations;
 
 class LaravelAutoTranslateServiceProvider extends PackageServiceProvider
 {
