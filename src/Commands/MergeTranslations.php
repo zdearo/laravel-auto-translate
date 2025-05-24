@@ -38,13 +38,17 @@ class MergeTranslations extends Command
 
         $existingTranslations = [];
         if (File::exists($langPath)) {
-            $existingTranslations = json_decode(File::get($langPath), true) ?? [];
+            $content = File::get($langPath);
+            $decoded = json_decode($content, true);
+            $existingTranslations = is_array($decoded) ? $decoded : [];
             $this->info('Found '.count($existingTranslations)." existing translations in {$locale}.json");
         } else {
             $this->warn("No existing {$locale}.json file found. A new one will be created.");
         }
 
-        $newStrings = json_decode(File::get($newStringsPath), true) ?? [];
+        $content = File::get($newStringsPath);
+        $decoded = json_decode($content, true);
+        $newStrings = is_array($decoded) ? $decoded : [];
         $this->info('Found '.count($newStrings)." strings in new_strings_{$locale}.json");
 
         $totalNewStrings = count($newStrings);
@@ -82,8 +86,9 @@ class MergeTranslations extends Command
 
                 foreach ($newStrings as $key => $value) {
                     if (empty($value)) {
-                        if ($this->confirm("Translate '{$key}' now?")) {
-                            $translation = $this->ask("Enter translation for '{$key}'");
+                        $stringKey = is_string($key) ? $key : (string)$key;
+                        if ($this->confirm("Translate '{$stringKey}' now?")) {
+                            $translation = $this->ask("Enter translation for '{$stringKey}'");
                             if (! empty($translation)) {
                                 $stringsToMerge[$key] = $translation;
                             }
@@ -109,7 +114,13 @@ class MergeTranslations extends Command
             $this->info("Backup of original file created at {$backupPath}");
         }
 
-        File::put($langPath, json_encode($mergedTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $jsonContent = json_encode($mergedTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        if ($jsonContent === false) {
+            $this->error('Failed to encode merged translations to JSON');
+            return 1;
+        }
+
+        File::put($langPath, $jsonContent);
 
         // Ask if the user wants to delete the new strings file
         if ($this->confirm("Delete new_strings_{$locale}.json file?", true)) {

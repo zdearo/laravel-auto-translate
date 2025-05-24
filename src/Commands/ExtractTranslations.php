@@ -34,7 +34,9 @@ class ExtractTranslations extends Command
         // Load existing translations
         $existingTranslations = [];
         if (File::exists($langPath)) {
-            $existingTranslations = json_decode(File::get($langPath), true) ?? [];
+            $content = File::get($langPath);
+            $decoded = json_decode($content, true);
+            $existingTranslations = is_array($decoded) ? $decoded : [];
             $this->info('Found '.count($existingTranslations)." existing translations in {$locale}.json");
         } else {
             $this->warn("No existing translations found for {$locale}. Will create a new file.");
@@ -55,7 +57,13 @@ class ExtractTranslations extends Command
         $newTranslations = array_fill_keys($newTranslations, '');
         ksort($newTranslations);
 
-        File::put($newStringsPath, json_encode($newTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $jsonContent = json_encode($newTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        if ($jsonContent === false) {
+            $this->error('Failed to encode translations to JSON');
+            return 1;
+        }
+
+        File::put($newStringsPath, $jsonContent);
 
         $this->info("New translations extracted to lang/new_strings_{$locale}.json");
         $this->info('Found '.count($newTranslations)." new strings for {$locale}");
@@ -65,7 +73,13 @@ class ExtractTranslations extends Command
             $mergedTranslations = array_merge($existingTranslations, $newTranslations);
             ksort($mergedTranslations);
 
-            File::put($langPath, json_encode($mergedTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $jsonContent = json_encode($mergedTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            if ($jsonContent === false) {
+                $this->error('Failed to encode merged translations to JSON');
+                return 1;
+            }
+
+            File::put($langPath, $jsonContent);
             $this->info("Merged new strings into {$locale}.json");
 
             // Optionally delete the new strings file after merging
@@ -90,6 +104,11 @@ class ExtractTranslations extends Command
         foreach ($files as $file) {
             if ($file->getExtension() === 'php' || $file->getExtension() === 'blade') {
                 $content = file_get_contents($file->getPathname());
+
+                if ($content === false) {
+                    $this->warn("Could not read file: " . $file->getPathname());
+                    continue;
+                }
 
                 // __('string')
                 preg_match_all("/__\(['\"](.+?)['\"](,|\))/", $content, $matches);
@@ -128,7 +147,9 @@ class ExtractTranslations extends Command
         }
 
         foreach (File::directories($directory) as $subdirectory) {
-            $this->extractTranslationsFromDirectory($subdirectory, $translations);
+            if (is_string($subdirectory)) {
+                $this->extractTranslationsFromDirectory($subdirectory, $translations);
+            }
         }
     }
 }
