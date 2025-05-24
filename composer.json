@@ -2,10 +2,6 @@
     "name": "zdearo/laravel-auto-translate",
     "version": "dev-main",
     "type": "library",
-    "bin": [
-        "bin/extract-translations",
-        "bin/merge-translations"
-    ],
     "description": "A Laravel package for auto translate strings.",
     "keywords": [
         "Adryel Dearo",

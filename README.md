@@ -17,8 +17,6 @@ We highly appreciate you sending us a postcard from your hometown, mentioning wh
 
 ## Installation
 
-### Local Installation
-
 You can install the package via composer in your Laravel project:
 
 ```bash
@@ -31,33 +29,6 @@ You can publish the config file with:
 php artisan vendor:publish --tag="laravel-auto-translate-config"
 ```
 
-### Global Installation
-
-You can also install this package globally to use it across multiple Laravel projects:
-
-```bash
-composer global require zdearo/laravel-auto-translate
-```
-
-Make sure to add the global Composer bin directory to your PATH:
-
-```bash
-# For Bash/ZSH
-export PATH="$PATH:$HOME/.composer/vendor/bin"
-
-# For Windows/PowerShell
-$env:Path += ";$env:APPDATA\Composer\vendor\bin"
-```
-
-#### Linux/Mac Users
-
-If you're using Linux or Mac, you may need to make the bin files executable:
-
-```bash
-chmod +x ~/.composer/vendor/bin/extract-translations
-chmod +x ~/.composer/vendor/bin/merge-translations
-```
-
 ## Usage
 
 ### Extract Translations
@@ -65,11 +36,7 @@ chmod +x ~/.composer/vendor/bin/merge-translations
 This command scans your Laravel application for translation strings and extracts them to a JSON file:
 
 ```bash
-# If installed locally
 php artisan translations:extract {locale}
-
-# If installed globally
-extract-translations {locale}
 ```
 
 Replace `{locale}` with your desired language code (e.g., `en`, `pt_BR`, `es_ES`).
@@ -84,11 +51,7 @@ The command will:
 This command merges translated strings from `new_strings_{locale}.json` to your main translation file:
 
 ```bash
-# If installed locally
 php artisan translations:merge {locale}
-
-# If installed globally
-merge-translations {locale}
 ```
 
 The command offers three merge options:
