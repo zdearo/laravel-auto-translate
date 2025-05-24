@@ -16,8 +16,9 @@ class ExtractTranslations extends Command
         $locale = $this->argument('locale');
 
         // Validate the locale format
-        if (!preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $locale)) {
+        if (! preg_match('/^[a-z]{2}(_[A-Z]{2})?$/', $locale)) {
             $this->error("Invalid locale format. Please use format like 'en', 'pt_BR', 'es_ES'.");
+
             return 1;
         }
 
@@ -34,18 +35,19 @@ class ExtractTranslations extends Command
         $existingTranslations = [];
         if (File::exists($langPath)) {
             $existingTranslations = json_decode(File::get($langPath), true) ?? [];
-            $this->info("Found " . count($existingTranslations) . " existing translations in {$locale}.json");
+            $this->info('Found '.count($existingTranslations)." existing translations in {$locale}.json");
         } else {
             $this->warn("No existing translations found for {$locale}. Will create a new file.");
         }
 
         // Filter out strings that already exist in the locale json
         $newTranslations = array_filter($translations, function ($string) use ($existingTranslations) {
-            return !isset($existingTranslations[$string]);
+            return ! isset($existingTranslations[$string]);
         });
 
         if (empty($newTranslations)) {
             $this->info("No new strings found for {$locale}.");
+
             return 0;
         }
 
@@ -56,7 +58,7 @@ class ExtractTranslations extends Command
         File::put($newStringsPath, json_encode($newTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         $this->info("New translations extracted to lang/new_strings_{$locale}.json");
-        $this->info("Found " . count($newTranslations) . " new strings for {$locale}");
+        $this->info('Found '.count($newTranslations)." new strings for {$locale}");
 
         // Ask if the user wants to merge the new strings into the existing locale file
         if ($this->confirm("Would you like to merge the new strings into the main {$locale}.json file?")) {
@@ -69,7 +71,7 @@ class ExtractTranslations extends Command
             // Optionally delete the new strings file after merging
             if ($this->confirm("Remove the temporary new_strings_{$locale}.json file?")) {
                 File::delete($newStringsPath);
-                $this->info("Temporary file removed.");
+                $this->info('Temporary file removed.');
             }
         }
 
@@ -79,9 +81,7 @@ class ExtractTranslations extends Command
     /**
      * Recursively extract translation strings from a directory.
      *
-     * @param string $directory
-     * @param array<string> $translations
-     * @return void
+     * @param  array<string>  $translations
      */
     protected function extractTranslationsFromDirectory(string $directory, array &$translations): void
     {
@@ -110,7 +110,7 @@ class ExtractTranslations extends Command
                     $bladeMatches[1]
                 );
 
-                if (!empty($allMatches)) {
+                if (! empty($allMatches)) {
                     foreach ($allMatches as $match) {
                         if (trim($match) === '') {
                             continue;
@@ -119,7 +119,7 @@ class ExtractTranslations extends Command
                         $match = str_replace('\\\'', "'", $match);
                         $match = str_replace('\\"', '"', $match);
 
-                        if (!in_array($match, $translations)) {
+                        if (! in_array($match, $translations)) {
                             $translations[] = $match;
                         }
                     }

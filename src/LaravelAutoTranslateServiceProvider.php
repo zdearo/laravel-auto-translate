@@ -21,7 +21,7 @@ class LaravelAutoTranslateServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasCommands([
                 ExtractTranslations::class,
-                MergeTranslations::class
+                MergeTranslations::class,
             ]);
     }
 }
