@@ -30,20 +30,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Zdearo\\LaravelAutoTranslate\\": "src/",
-            "Zdearo\\LaravelAutoTranslate\\Database\\Factories\\": "database/factories/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Zdearo\\LaravelAutoTranslate\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
+            "Zdearo\\LaravelAutoTranslate\\": "src/"
         }
     },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true,
             "phpstan/extension-installer": true
         }
     },
